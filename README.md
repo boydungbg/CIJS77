@@ -1,1 +1,2 @@
 Init git
+Hoc gioi
