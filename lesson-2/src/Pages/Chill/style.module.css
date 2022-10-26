@@ -1,0 +1,16 @@
+.container {
+  background-color: #231b2e;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.title {
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+.itemsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

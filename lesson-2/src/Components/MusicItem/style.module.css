@@ -1,0 +1,47 @@
+.item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.item:hover {
+  background-color: #393243;
+}
+.thumbContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.thumbnail {
+  width: 100%;
+  border-radius: 10px;
+}
+.playBtnContainer {
+  position: absolute;
+  z-index: 10;
+  color: white;
+  font-size: 40px;
+  border-radius: 10px;
+}
+.infoContainer {
+  padding-left: 0;
+}
+.nameText {
+  font-size: 18px;
+  font-weight: 400;
+  color: white;
+}
+.artistsText,
+.releasedTimeText {
+  font-size: 14px;
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.621);
+}
+.vipBadgeHide {
+  visibility: hidden;
+}
+.product-item-container {
+  background-color: blueviolet;
+}
