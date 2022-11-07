@@ -1,21 +1,149 @@
 import './App.css';
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  withRouter,
+  useHistory,
+} from "react-router-dom";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<h1>HomePage</h1>} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
+      <Switch>
+        <Route exact path="/">
+          {/* <HomePage /> */}
+          <HomePageHook />
+        </Route>
+        <Route exact path="/register"  >
+          <RegisterPage />
+        </Route>
+        <Route exact path="/login" >
+          <LoginPage />
+        </Route>
+      </Switch>
     </Router>
   );
 }
 
 
 export default App;
+
+
+class HomePage extends React.Component {
+  constructor(props) {
+    console.log("init component");
+    super(props)
+    this.state = {
+      counter: 0
+    }
+  }
+
+  componentWillMount() {
+    console.log("componentWillMount");
+  }
+
+  componentDidMount() {
+    console.log("componentDidMount");
+  }
+
+  componentWillUpdate() {
+    console.log("componentWillUpdate");
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.counter % 2 == 0;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("componentWillReceiveProps");
+  }
+
+  componentDidUpdate() {
+    console.log("componentDidUpdate");
+  }
+
+  componentWillUnmount() {
+    console.log("componentWillUnmount");
+  }
+
+  render() {
+    console.log("render");
+    return <>
+      <h1>HomePage</h1>
+      <div>
+        <div>{this.state.counter}</div>
+        <button onClick={() => {
+          this.setState({
+            counter: this.state.counter + 1
+          })
+        }}>+1</button>
+      </div>
+      <div>
+        <button onClick={() => {
+          this.props.history.push("/login");
+        }}>go to login page</button>
+      </div>
+    </>
+  }
+}
+
+HomePage = withRouter(HomePage);
+
+function HomePageHook() {
+  let history = useHistory();
+  let [listImage, setListImage] = useState([]);
+  let [page, setPage] = useState(1);
+  let [limit, setLimit] = useState(10);
+  let [maxPage, setMaxPage] = useState(1);
+
+  useEffect(() => {
+    getListPhotos();
+  }, [])
+
+  useEffect(() => {
+    getListPhotos();
+  }, [page])
+
+  function getListPhotos() {
+    fetch(`https://635d3184cb6cf98e56af2894.mockapi.io/api/v1/users/1/photos?page=${page}&limit=${limit}`).then((response) => response.json()).then((res) => {
+      setListImage([...res.items]);
+      setMaxPage(res.count / limit);
+    }).catch((err) => console.log(err))
+  }
+
+  return <>
+    <h1>HomePage</h1>
+    <div>
+      {page > 1 ? <button onClick={() => {
+        setPage(page - 1)
+      }}>Previous Page</button> : <></>}
+      <>{page}</>
+      {page < maxPage ? <button onClick={() => {
+        setPage(page + 1)
+      }}>Next page</button> : <></>}
+    </div>
+    <div>
+      <select onChange={(e) => {
+        setLimit(e.target.value);
+        setPage(1);
+      }} defaultValue={limit} >
+        <option value={10} >10</option>
+        <option value={20} >20</option>
+        <option value={50} >50</option>
+        <option value={100}>100</option>
+      </select>
+    </div>
+    <div>
+      {
+        listImage.map((value, index) => <div key={index}>
+          <img src={value.image} alt={value.description} />
+        </div>)
+      }
+    </div>
+  </>
+}
 
 class RegisterPage extends React.Component {
   constructor(props) {
@@ -99,9 +227,8 @@ class RegisterPage extends React.Component {
         password: password,
       })
     }).then(() => {
-      // window.location.href = "/login";
-      const navigate = useNavigate();
-      navigate('/login')
+      const { match, location, history } = this.props;
+      history.replace("/login");
     }).catch((err) => {
 
     });
@@ -145,6 +272,8 @@ class RegisterPage extends React.Component {
     </>
   }
 }
+
+RegisterPage = withRouter(RegisterPage)
 
 class LoginPage extends React.Component {
   constructor(props) {
